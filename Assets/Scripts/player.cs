@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class player : MonoBehaviour
@@ -18,6 +19,8 @@ public class player : MonoBehaviour
     //animaciones
     private Animator animator;
 
+    private int coins;
+    public TMP_Text textCoins;
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
@@ -29,9 +32,9 @@ public class player : MonoBehaviour
         move = Input.GetAxis("Horizontal");
         rb2D.linearVelocity = new Vector2(move * speed, rb2D.linearVelocity.y);
 
-        if(move != 0)
+        if (move != 0)
         {
-                       transform.localScale = new Vector3(Mathf.Sign(move), 1, 1);
+            transform.localScale = new Vector3(Mathf.Sign(move), 1, 1);
         }
 
         //condicional de salto
@@ -49,5 +52,15 @@ public class player : MonoBehaviour
     private void FixedUpdate()
     {
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.transform.CompareTag("coin"))
+        {
+            Destroy(collision.gameObject);
+            coins++;
+            textCoins.text = coins.ToString();
+        }
     }
 }
