@@ -15,9 +15,13 @@ public class player : MonoBehaviour
     public float groundCheckRadius = 0.1f;
     public LayerMask groundLayer;
 
+    //animaciones
+    private Animator animator;
+
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -35,6 +39,10 @@ public class player : MonoBehaviour
         {
             rb2D.linearVelocity = new Vector2(rb2D.linearVelocity.x, FuerzaSalto);
         }
+
+        animator.SetFloat("Speed", Mathf.Abs(move));
+        animator.SetFloat("VerticalVelocity", rb2D.linearVelocity.y);
+        animator.SetBool("IsGrounded", isGrounded); //saber si estas en el suelo o no en las animaciones
     }
 
     //Detectar si el jugador esta tocando el suelo
