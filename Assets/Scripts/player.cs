@@ -1,5 +1,7 @@
 using TMPro;
+using Unity.VectorGraphics;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class player : MonoBehaviour
 {
@@ -21,6 +23,12 @@ public class player : MonoBehaviour
 
     private int coins;
     public TMP_Text textCoins;
+
+    public AudioSource audioSource;
+    public AudioClip coinClip;
+    public AudioClip barrelClip;
+
+
     void Start()
     {
         rb2D = GetComponent<Rigidbody2D>();
@@ -58,9 +66,33 @@ public class player : MonoBehaviour
     {
         if (collision.transform.CompareTag("coin"))
         {
+            audioSource.PlayOneShot(coinClip);
             Destroy(collision.gameObject);
             coins++;
             textCoins.text = coins.ToString();
+        }
+
+        if (collision.transform.CompareTag("Spikes"))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        }
+
+        if(collision.transform.CompareTag("Barril"))
+        {
+            audioSource.PlayOneShot(barrelClip);
+            Vector2 knockback = (rb2D.position - (Vector2)collision.transform.position).normalized;
+            rb2D.linearVelocity = Vector2.zero; 
+            rb2D.AddForce(knockback * 3, ForceMode2D.Impulse);
+
+            BoxCollider2D[] colliders = collision.gameObject.GetComponents<BoxCollider2D>();
+            foreach (BoxCollider2D col in colliders)
+            {
+                col.enabled = false;
+            }
+
+            collision.GetComponent<Animator>().enabled = true;
+            Destroy (collision.gameObject, 0.5f);
         }
     }
 }
